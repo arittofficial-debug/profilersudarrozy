@@ -19,6 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SetLocale::class,
         ]);
 
+        $middleware->alias([
+            'permission' => \App\Http\Middleware\AuthorizePermission::class,
+            'active.access' => \App\Http\Middleware\RequireActiveAccess::class,
+            'usergate.sync' => \App\Http\Middleware\SyncUserGateSession::class,
+        ]);
+
         $middleware->redirectGuestsTo(fn() => route('admin.login'));
     })
 

@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:settings.view')->only(['edit']);
+        $this->middleware('permission:settings.update')->only(['update', 'deleteImage']);
+    }
+
     public function edit()
     {
         $settings = CompanySetting::getSettings();

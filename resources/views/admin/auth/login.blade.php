@@ -22,15 +22,21 @@
 
         <!-- Login Form -->
         <div class="glass rounded-2xl p-8">
-            <form method="POST" action="{{ route('admin.login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
                 @csrf
 
+                @if (session('error'))
+                    <div class="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div>
-                    <label for="email" class="block text-sm font-medium text-white/80 mb-2">Email Address</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                    <label for="username" class="block text-sm font-medium text-white/80 mb-2">Username / Email</label>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}" required autofocus
                         class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="admin@company.com">
-                    @error('email')
+                    @error('username')
                         <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>

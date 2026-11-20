@@ -155,7 +155,7 @@ Email    : admin@company.com
 Password : password
 ```
 
-> Ganti kredensial ini setelah login pertama.
+> Kredensial lokal hanya fallback saat UserGate tidak dapat dihubungi. Statusnya diatur oleh env `LOCAL_SUPERADMIN_ENABLED`. Ganti kredensial ini sebelum production.
 
 ## Struktur Proyek
 

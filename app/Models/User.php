@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'usergate_id',
+        'username',
+        'is_active',
+        'last_login_at',
+        'last_synced_at',
     ];
 
     /**
@@ -43,6 +48,51 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
+            'last_synced_at' => 'datetime',
         ];
+    }
+
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_active && $this->roles()->where('roles.slug', 'super_admin')->exists();
+    }
+
+    public function hasRole(string $slug): bool
+    {
+        return $this->roles()->where('roles.slug', $slug)->exists();
+    }
+
+    public function hasAnyRole(array $slugs): bool
+    {
+        return $this->roles()->whereIn('roles.slug', $slugs)->exists();
+    }
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->roles()
+            ->whereHas('permissions', fn ($query) => $query->where('permissions.slug', $permission))
+            ->exists();
+    }
+
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermissionTo($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
