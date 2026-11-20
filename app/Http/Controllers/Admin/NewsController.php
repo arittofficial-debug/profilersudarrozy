@@ -15,6 +15,15 @@ class NewsController extends Controller
 {
     use StoresUploads;
 
+    public function __construct()
+    {
+        $this->middleware('permission:news.view')->only(['adminIndex']);
+        $this->middleware('permission:news.create')->only(['create', 'store']);
+        $this->middleware('permission:news.update')->only(['edit', 'update']);
+        $this->middleware('permission:news.delete')->only(['destroy']);
+        $this->middleware('permission:news.images.manage')->only(['destroyImage']);
+    }
+
     // ============ FRONTEND (sudah ada, jangan diubah) ============
 
     public function index()

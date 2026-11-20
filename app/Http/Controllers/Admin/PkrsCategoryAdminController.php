@@ -9,6 +9,14 @@ use App\Models\PkrsCategory;
 
 class PkrsCategoryAdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:pkrs_categories.view')->only(['index']);
+        $this->middleware('permission:pkrs_categories.create')->only(['create', 'store']);
+        $this->middleware('permission:pkrs_categories.update')->only(['edit', 'update']);
+        $this->middleware('permission:pkrs_categories.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $categories = PkrsCategory::latest()->paginate(10);

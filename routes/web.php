@@ -12,6 +12,7 @@ use App\Http\Controllers\Frontend\PkrsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PkrsGalleryController;
 use App\Http\Controllers\Admin\PkrsPostController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Frontend\PpidController;
 use App\Http\Controllers\Frontend\ProfileController;
 
@@ -55,11 +56,14 @@ Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 // Admin Auth (Guest)
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::post('/usergate/sso', [AuthController::class, 'usergateSso'])
+        ->name('usergate.sso')
+        ->middleware('throttle:10,1');
 });
 
 // Admin Panel (Authenticated)
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'usergate.sync', 'active.access'])->group(function () {
     Route::redirect('/', '/admin/dashboard');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -94,4 +98,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/delete-image/{field}', [SettingsController::class, 'deleteImage'])->name('settings.delete-image');
+
+    // User management
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });

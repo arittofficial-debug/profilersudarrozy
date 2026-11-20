@@ -14,6 +14,14 @@ class PkrsGalleryController extends Controller
 {
     use StoresUploads;
 
+    public function __construct()
+    {
+        $this->middleware('permission:pkrs_galleries.view')->only(['index']);
+        $this->middleware('permission:pkrs_galleries.create')->only(['create', 'store']);
+        $this->middleware('permission:pkrs_galleries.update')->only(['edit', 'update']);
+        $this->middleware('permission:pkrs_galleries.delete')->only(['destroy']);
+    }
+
     /**
      * Display a listing of galleries.
      */

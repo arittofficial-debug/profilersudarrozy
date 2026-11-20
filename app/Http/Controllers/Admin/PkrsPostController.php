@@ -17,6 +17,15 @@ class PkrsPostController extends Controller
 {
     use StoresUploads;
 
+    public function __construct()
+    {
+        $this->middleware('permission:pkrs_posts.view')->only(['index', 'show']);
+        $this->middleware('permission:pkrs_posts.create')->only(['create', 'store']);
+        $this->middleware('permission:pkrs_posts.update')->only(['edit', 'update']);
+        $this->middleware('permission:pkrs_posts.delete')->only(['destroy']);
+        $this->middleware('permission:pkrs_posts.publish')->only(['togglePublish']);
+    }
+
     /**
      * Display a listing of posts.
      */

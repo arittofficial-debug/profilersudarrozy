@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\File;
 
 class AdminDoctorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:doctors.view')->only(['index']);
+        $this->middleware('permission:doctors.create')->only(['create', 'store']);
+        $this->middleware('permission:doctors.update')->only(['edit', 'update']);
+        $this->middleware('permission:doctors.delete')->only(['destroy']);
+        $this->middleware('permission:doctors.toggle_active')->only(['toggleActive']);
+    }
+
     public function index()
     {
         $doctors = Doctor::with('schedules')
